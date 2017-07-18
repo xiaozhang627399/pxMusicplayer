@@ -1,4 +1,4 @@
-const _baseUrl = 'http://127.0.0.1:3000/'
+const _baseUrl = 'http://192.168.1.10:3000/'
 import axios from 'axios'
 
 export default {
@@ -10,5 +10,8 @@ export default {
     },
     newSong () {
         return _baseUrl + 'personalized/newsong'
+    },
+    songList () {
+        return _baseUrl + 'playlist/detail?id='
     }
 }

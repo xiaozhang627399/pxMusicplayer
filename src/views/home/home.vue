@@ -1,5 +1,10 @@
 <template>
     <div class="home-wrapper">
+        <mu-tabs :value="activeTab" @change="handleTabChange">
+            <mu-tab value="home" title="推荐" />
+            <mu-tab value="rank" title="排行榜" />
+            <mu-tab value="search" title="搜索" />
+        </mu-tabs>
         <swiper :options="swiperOption" class="swiper-box">
             <swiper-slide class="swiper-item" v-if="banners" v-for="(banner, index) in banners" :index="index" :key="banner.targetId">
                 <img class="swiper-img" v-if="banner" v-bind:src="banner.pic">
@@ -10,7 +15,7 @@
             <p>推荐歌单</p>
         </div>
         <div class="commend-wrapper">
-            <div class="commend" v-if="commends" v-for="(commend, index) in commends" :index="index" :key="commend.id" @click="getSongListIndex(commend.id)">
+            <div class="commend" v-if="commends" v-for="(commend, index) in commends" :index="index" :key="commend.id" @click="getSongListIndex(commend.id, index)">
                 <router-link to='/songList'>
                     <img class="commend-img" v-if="commend" :src="commend.coverImgUrl">
                     <p>{{commend.name}}</p>
@@ -63,6 +68,7 @@ export default {
             banners: [],
             commends: [],
             newSongs: [],
+            activeTab: 'home',
             swiperOption: {
                 pagination: '.swiper-pagination',
                 direction: 'horizontal',
@@ -76,8 +82,23 @@ export default {
         }
     },
     methods: {
-        getSongListIndex (index) {
-            this.$store.commit('getSongListId',index)
+        getSongListIndex(id, index) {
+            console.log(this.commends[index])
+            let songListInfo = []
+            songListInfo.id = id
+            songListInfo.trackCount = this.commends[index].trackCount
+            songListInfo.subscribedCount = this.commends[index].subscribedCount
+            songListInfo.commentCount = this.commends[index].commentCount
+            songListInfo.shareCount = this.commends[index].shareCount
+            songListInfo.coverImgUrl = this.commends[index].coverImgUrl
+            songListInfo.description = this.commends[index].description
+            songListInfo.name = this.commends[index].name
+            this.$store.commit('getSongListInfo', songListInfo)
+        },
+        handleTabChange(val) {
+            this.activeTab = val
+            var _path = val
+            this.$router.push({ path: _path })
         }
     },
     components: { musicTray }
@@ -85,6 +106,8 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+body 
+    background #fafafa
 .swiper-wrapper
     width 100%
     height 150px
@@ -114,10 +137,12 @@ export default {
     justify-content space-around
     align-items center
     flex-wrap wrap
+    background #fafafa
     .commend
         width 50%
         height 220px
         overflow hidden
+        background #fafafa
         .commend-img
             width 100%
             padding 10px 10px 0 10px
@@ -132,10 +157,12 @@ export default {
     justify-content space-around
     align-items center
     flex-wrap wrap
+    background #fafafa
     .newSong
         width 50%
         height 220px
         overflow hidden
+        background #fafafa
         .newSong-img
             width 100%
             padding 10px 10px 0 10px

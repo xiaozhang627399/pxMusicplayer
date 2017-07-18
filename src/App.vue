@@ -5,11 +5,6 @@
     </mu-appbar>
     <mu-popup position="left" popupClass="popup-left" :open="leftPopup" @close="close('left')">
     </mu-popup>
-    <mu-tabs :value="activeTab" @change="handleTabChange">
-      <mu-tab value="home" title="推荐" />
-      <mu-tab value="rank" title="排行榜" />
-      <mu-tab value="search" title="搜索" />
-    </mu-tabs>
     <router-view></router-view>
   </div>
 </template>
@@ -20,7 +15,6 @@ export default {
   data() {
     return {
       leftPopup: false,
-      activeTab: 'home'
     }
   },
   methods: {
@@ -29,11 +23,6 @@ export default {
     },
     close(position) {
       this[position + 'Popup'] = false
-    },
-    handleTabChange(val) {
-      this.activeTab = val
-      var _path = val
-      this.$router.push({path: _path})
     }
   }
 }
@@ -41,6 +30,7 @@ export default {
 
 <style lang='stylus' rel='stylesheet/stylus'>
 .mu-appbar
+    height 50px
     background white
     color #757575
 .mu-tabs
