@@ -17,7 +17,7 @@ const store = new Vuex.Store({
                 cover: "http://p1.music.126.net/zy9EZ2dcsofYlVAn-nb-wA==/3412884129074161.jpg"
             }
         ],
-        songIndex: 0,
+        songIndex: '0',
         isPlaying: 'play'
     },
     mutations: {
@@ -32,10 +32,13 @@ const store = new Vuex.Store({
         },
         addSong (state, source) {
             state.songList.push(source)
-            state.songIndex++
+            state.songIndex = state.songList.length - 1
         },
         isPlaying (state, source) {
             state.isPlaying = source
+        },
+        changeSongIndex(state, source){
+            state.songIndex = source
         }
     }
 })

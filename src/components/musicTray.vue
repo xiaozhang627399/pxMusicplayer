@@ -13,10 +13,31 @@
             <div class="play-btn" @click="play">
                 <img :src="'./../../static/' + isPlaying + '.png'">
             </div>
-            <div class="playList-btn">
+            <div class="playList-btn" @click="toggleMusicList">
                 <img src="./../../static/playlist.png">
             </div>
         </div>
+        <mu-popup position="bottom" popupClass="popup-bottom" :open="isPlayList" @close="toggleMusicList">
+            <div class="playList-wrapper">
+                <div class="playList-bar">
+                    <div>
+                        <img src="./../../static/playlist(1).png">
+                        <p>播放列表</p>
+                    </div>
+                    <div>
+                        <img src="./../../static/delete.png">
+                        <p>清空</p>
+                    </div>
+                </div>
+                <div class="playList-item" v-for="(song, index) in playList" :key="index" @click="playThisSong(index)">
+                    <p>{{song.name}}-
+                        <span>{{song.singer}}</span>
+                    </p>
+                </div>
+            </div>
+        </mu-popup>
+        <mu-popup position="bottom" popupClass="popup-bottom" :open="is" @close="toggleMusicList">
+        </mu-popup>
     </div>
 </template>
 
@@ -27,6 +48,7 @@ export default {
         return {
             playIndex: 0,
             audio: '',
+            isPlayList: false,
             playList: [
                 {
                     name: "无法长大",
@@ -67,24 +89,43 @@ export default {
                 this.$store.commit('isPlaying', 'play')
             }
         },
-        playThisSong() {
-            this.playList = this.$store.state.songList
-            var audio = this.$store.state.audio
-            audio.pause()
-            var audio = document.createElement("audio")
-            this.playIndex = this.$store.state.songIndex
-            audio.src = this.playList[this.playIndex].url
-            this.$store.commit('audio', audio)
-            audio.play()
-            this.isPlaying = 'pause'
-            this.$store.commit('isPlaying', 'pause')
+        playThisSong(index) {
+            console.log(index)
+            if (index != undefined) {
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                this.playIndex = index
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('audio', audio)
+                this.$store.commit('changeSongIndex', index)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+                this.toggleMusicList()
+            }
+            else {
+                this.playList = this.$store.state.songList
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                this.playIndex = this.$store.state.songIndex
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('audio', audio)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+            }
+        },
+        toggleMusicList() {
+            this.isPlayList = !this.isPlayList
         }
     },
     computed: {
-        isAudio () {
+        isAudio() {
             return this.$store.state.isAudio
         },
-        isPlaying () {
+        isPlaying() {
             return this.$store.state.isPlaying
         }
     }
@@ -162,4 +203,58 @@ export default {
             img
                 width 100%
                 height 100%
+.mu-popup
+    width 100%
+    .playList-wrapper
+        width 100%
+        .playList-bar
+            display flex
+            justify-content space-between
+            align-items center
+            flex-wrap nowrap
+            width 100%
+            height 40px
+            border-bottom 1px solid #e0e0e0
+            div 
+                display flex
+                align-items center
+                flex-wrap nowrap
+                width 100%
+                img
+                    width 16px
+                    height 16px
+                p
+                    font-size 13px
+                    color black
+            div:first-child
+                justify-content flex-start
+                img
+                    margin-left 5px
+                p
+                    margin-left 5px
+            div:last-child
+                justify-content flex-end
+                img
+                    margin-right 5px
+                p
+                    margin-right 5px
+        .playList-item
+            display flex
+            justify-content space-between
+            align-items center
+            flex-wrap nowrap
+            width 100%
+            height 40px
+            border-bottom 1px solid #e0e0e0
+            p
+                width 100%
+                margin-left 5px
+                font-size 13px
+                color black
+                overflow: hidden
+                white-space: nowrap
+                text-overflow: ellipsis
+                span
+                    font-size 12px
+                    color #616161
 </style>

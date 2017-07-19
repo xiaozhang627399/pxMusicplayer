@@ -236,7 +236,8 @@ export default {
                     width 100%
                     margin 0
                     color #757575
-                    font-size 12px    
+                    font-size 12px
+                    line-height 17px    
                     overflow: hidden
                     white-space: nowrap
                     text-overflow: ellipsis
