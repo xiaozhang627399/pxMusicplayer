@@ -1,6 +1,6 @@
 <template>
     <div class="musicTray-wrapper">
-        <div class="info-wrapper">
+        <div class="info-wrapper" @click="toggleDetail">
             <div class="cover-wrapper">
                 <img :src="playList[playIndex].cover">
             </div>
@@ -36,7 +36,38 @@
                 </div>
             </div>
         </mu-popup>
-        <mu-popup position="bottom" popupClass="popup-bottom" :open="is" @close="toggleMusicList">
+        <mu-popup position="bottom" popupClass="playDetail" :open="isDetail" @close="toggleDetail">
+            <div class="detail-wrapper">
+                <div class="detailCover-wrapper">
+                    <img class="detailClose-btn" @click="toggleDetail" src="./../../static/arrow-down.png">
+                    <img class="detailCover" :src="playList[playIndex].cover">
+                </div>
+                <div class="detailInfo-wrapper">
+                    <p>{{playList[playIndex].name}}</p>
+                    <p>{{playList[playIndex].singer}}</p>
+                </div>
+                <div class="detailProcess-wrapper">
+                    <div class="detailProcss">
+                    </div>
+                </div>
+                <div class="detailControl-wrapper">
+                    <div>
+                        <img src="./../../static/like.png">
+                    </div>
+                    <div>
+                        <img src="./../../static/prev.png" @click="prevSong">
+                    </div>
+                    <div @click="play">
+                        <img :src="'./../../static/' + isPlaying + '(1).png'">
+                    </div>
+                    <div>
+                        <img src="./../../static/next.png" @click="nextSong">
+                    </div>
+                    <div @click="toggleMusicList">
+                        <img src="./../../static/playlist.png">
+                    </div>
+                </div>
+            </div>
         </mu-popup>
     </div>
 </template>
@@ -49,6 +80,7 @@ export default {
             playIndex: 0,
             audio: '',
             isPlayList: false,
+            isDetail: false,
             playList: [
                 {
                     name: "无法长大",
@@ -90,7 +122,6 @@ export default {
             }
         },
         playThisSong(index) {
-            console.log(index)
             if (index != undefined) {
                 var audio = this.$store.state.audio
                 audio.pause()
@@ -117,8 +148,63 @@ export default {
                 this.$store.commit('isPlaying', 'pause')
             }
         },
+        nextSong() {
+            if (this.playIndex + 2 <= this.playList.length) {
+                this.playIndex = this.playIndex + 1
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('changeSongIndex', this.playIndex)
+                this.$store.commit('audio', audio)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+            }
+            else {
+                this.playIndex = 0
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('changeSongIndex', this.playIndex)
+                this.$store.commit('audio', audio)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+            }
+        },
+        prevSong() {
+            if (this.playIndex - 1 >= 0) {
+                this.playIndex = this.playIndex - 1
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('changeSongIndex', this.playIndex)
+                this.$store.commit('audio', audio)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+            }
+            else {
+                this.playIndex = this.playList.length - 1
+                var audio = this.$store.state.audio
+                audio.pause()
+                var audio = document.createElement("audio")
+                audio.src = this.playList[this.playIndex].url
+                this.$store.commit('changeSongIndex', this.playIndex)
+                this.$store.commit('audio', audio)
+                audio.play()
+                this.isPlaying = 'pause'
+                this.$store.commit('isPlaying', 'pause')
+            }
+        },
         toggleMusicList() {
             this.isPlayList = !this.isPlayList
+        },
+        toggleDetail() {
+            this.isDetail = !this.isDetail
         }
     },
     computed: {
@@ -133,6 +219,8 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+.playDetail
+    height 100%
 .musicTray-wrapper
     display flex
     justify-content space-between
@@ -207,6 +295,8 @@ export default {
     width 100%
     .playList-wrapper
         width 100%
+        max-height 440px
+        overflow-y auto
         .playList-bar
             display flex
             justify-content space-between
@@ -224,6 +314,7 @@ export default {
                     width 16px
                     height 16px
                 p
+                    margin 0
                     font-size 13px
                     color black
             div:first-child
@@ -257,4 +348,67 @@ export default {
                 span
                     font-size 12px
                     color #616161
+    .detail-wrapper
+        width 100%
+        height 100%
+        background #fafafa
+        .detailCover-wrapper
+            display flex
+            justify-content center
+            align-items center
+            flex-wrap nowrap
+            width 100%
+            height 60%
+            img
+                width 100%
+                height 100%
+            .detailClose-btn
+                position absolute
+                top 5px
+                right 5px
+                width 30px
+                height 30px
+        .detailInfo-wrapper
+            position absolute
+            bottom 150px
+            width 100%
+            display flex
+            justify-content center
+            align-items center
+            flex-wrap wrap
+            p
+                width 100%
+                margin 0
+                text-align center
+            p:first-child
+                font-size 16px
+                color black
+            p:last-child
+                margin-top 10px
+                font-size 15px
+        .detailProcess-wrapper
+            position absolute
+            bottom 100px
+            width 100%
+            height 3px
+            margin-top 10%
+            .detailProcss
+                width 80%
+                height 3px
+                margin 0 auto
+                background #616161
+        .detailControl-wrapper
+            display flex
+            position absolute
+            bottom 20px
+            width 100%
+            justify-content space-around
+            align-items center
+            flex-wrap nowrap
+            div
+                width 25px
+                height 25px
+                img
+                    width 100%
+                    height 100%
 </style>
