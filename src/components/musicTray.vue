@@ -48,6 +48,8 @@
                 </div>
                 <div class="detailProcess-wrapper">
                     <div class="detailProcss">
+                        <div class="detailProcss1">
+                        </div>
                     </div>
                 </div>
                 <div class="detailControl-wrapper">
