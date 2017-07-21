@@ -39,22 +39,19 @@
         <mu-popup position="bottom" popupClass="playDetail" :open="isDetail" @close="toggleDetail">
             <div class="detail-wrapper">
                 <div class="detailCover-wrapper">
-                    <img class="detailClose-btn" @click="toggleDetail" src="./../../static/arrow-down.png">
+                    <img class="detailClose-btn" @click="toggleDetail" src="./../../static/arrow_down.png">
                     <img class="detailCover" :src="playList[playIndex].cover">
                 </div>
                 <div class="detailInfo-wrapper">
                     <p>{{playList[playIndex].name}}</p>
                     <p>{{playList[playIndex].singer}}</p>
                 </div>
-                <div class="detailProcess-wrapper">
-                    <div class="detailProcss">
-                        <div class="detailProcss1">
-                        </div>
-                    </div>
+                <div class="detailProgress-wrapper" @click="changeProgress($event)" ref="progress" >
+                    <mu-linear-progress mode="determinate" :value="progress"/>
                 </div>
                 <div class="detailControl-wrapper">
                     <div>
-                        <img src="./../../static/like.png">
+                        <img src="./../../static/loop.png">
                     </div>
                     <div>
                         <img src="./../../static/prev.png" @click="prevSong">
@@ -83,6 +80,10 @@ export default {
             audio: '',
             isPlayList: false,
             isDetail: false,
+            progress: 0,
+            songDuration: 0,
+            songCurrentTime: 0,
+            songCurrentTimeListener: 0,
             playList: [
                 {
                     name: "无法长大",
@@ -135,7 +136,9 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.$store.commit('creatAudio')
                 this.toggleMusicList()
+                this.playProgress()
             }
             else {
                 this.playList = this.$store.state.songList
@@ -148,6 +151,8 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.$store.commit('creatAudio')
+                this.playProgress()
             }
         },
         nextSong() {
@@ -162,6 +167,7 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.playProgress()
             }
             else {
                 this.playIndex = 0
@@ -174,6 +180,7 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.playProgress()
             }
         },
         prevSong() {
@@ -188,6 +195,7 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.playProgress()
             }
             else {
                 this.playIndex = this.playList.length - 1
@@ -200,7 +208,29 @@ export default {
                 audio.play()
                 this.isPlaying = 'pause'
                 this.$store.commit('isPlaying', 'pause')
+                this.playProgress()
             }
+        },
+        playProgress() {
+            if(this.songCurrentTimeListener) {
+                clearInterval(this.songCurrentTimeListener)
+            }
+            var audio = this.$store.state.audio
+            var that = this
+            audio.addEventListener("canplay", function () {
+                that.songDuration = parseInt(audio.duration)
+                that.songCurrentTimeListener = setInterval(function () {
+                    that.songCurrentTime = parseInt(audio.currentTime)
+                    that.progress = (that.songCurrentTime/that.songDuration) * 100
+                }, 50)
+            })
+        },
+        changeProgress (e) {
+            var _progress = e.clientX/window.innerWidth
+            var audio = this.$store.state.audio
+            audio.currentTime = audio.duration * _progress
+            this.$store.commit('audio', audio)
+            clearInterval(this.songCurrentTimeListener)
         },
         toggleMusicList() {
             this.isPlayList = !this.isPlayList
@@ -208,6 +238,9 @@ export default {
         toggleDetail() {
             this.isDetail = !this.isDetail
         }
+    },
+    beforeDestroy() {
+        clearInterval(this.timer)
     },
     computed: {
         isAudio() {
@@ -388,17 +421,15 @@ export default {
             p:last-child
                 margin-top 10px
                 font-size 15px
-        .detailProcess-wrapper
-            position absolute
-            bottom 100px
+        .detailProgress-wrapper
             width 100%
-            height 3px
-            margin-top 10%
-            .detailProcss
-                width 80%
-                height 3px
-                margin 0 auto
-                background #616161
+            .mu-linear-progress
+                height 5px
+                background #bdbdbd
+                border-radius 0px
+                .mu-linear-progress-determinate
+                    background #424242
+                    border-radius 0px
         .detailControl-wrapper
             display flex
             position absolute
