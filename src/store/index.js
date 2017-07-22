@@ -19,7 +19,7 @@ const store = new Vuex.Store({
         ],
         songIndex: '0',
         isPlaying: 'play',
-        playProgress: 0
+        searchName: ''
     },
     mutations: {
         getSongListInfo(state, source) {
@@ -41,8 +41,8 @@ const store = new Vuex.Store({
         changeSongIndex(state, source){
             state.songIndex = source
         },
-        changeProgress(state, source){
-            state.playProgress = source
+        changeSearchName(state, source){
+            state.searchName = source
         }
     }
 })
