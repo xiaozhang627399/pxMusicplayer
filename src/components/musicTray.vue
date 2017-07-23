@@ -254,8 +254,6 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-.playDetail
-    height 100%
 .musicTray-wrapper
     display flex
     justify-content space-between
@@ -326,7 +324,7 @@ export default {
             img
                 width 100%
                 height 100%
-.mu-popup
+.popup-bottom
     width 100%
     .playList-wrapper
         width 100%
@@ -383,6 +381,9 @@ export default {
                 span
                     font-size 12px
                     color #616161
+.playDetail
+    width 100%
+    height 100%
     .detail-wrapper
         width 100%
         height 100%

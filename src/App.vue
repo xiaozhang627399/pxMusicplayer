@@ -6,10 +6,12 @@
     <mu-popup position="left" popupClass="popup-left" :open="leftPopup" @close="close('left')">
     </mu-popup>
     <router-view></router-view>
+    <loading></loading>
   </div>
 </template>
 
 <script>
+import loading from './components/loading'
 export default {
   name: 'app',
   data() {
@@ -24,7 +26,8 @@ export default {
     close(position) {
       this[position + 'Popup'] = false
     }
-  }
+  },
+  components: { loading }
 }
 </script>
 

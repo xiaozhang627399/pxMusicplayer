@@ -5,6 +5,7 @@ import rank from './../views/rank/rank'
 import search from './../views/search/search'
 import album from './../views/album/album'
 import songList from './../views/songList/songList'
+import searchList from './../views/searchList/searchList'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
       path: '/songList',
       name: 'songList',
       component: songList
+    },
+    {
+      path: '/searchList',
+      name: 'searchList',
+      component: searchList
     }
   ]
 })

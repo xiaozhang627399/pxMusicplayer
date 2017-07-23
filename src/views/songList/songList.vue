@@ -9,8 +9,8 @@
                 <div class="info-name-wrapper">
                     <p>{{songListInfo.name}}</p>
                     <div class="info-name-creator">
-                        <img v-if="songLists.creator" :src="songLists.creator.avatarUrl">
-                        <p v-if="songLists.creator">{{songLists.creator.nickname}}</p>
+                        <img v-if="songListInfo.creator" :src="songListInfo.creator.avatarUrl">
+                        <p v-if="songListInfo.creator">{{songListInfo.creator.nickname}}</p>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
             <p>播放全部</p>
             <p>(共{{songListInfo.trackCount}}首)</p>
         </div>
-        <div class="songList-content" v-if="songLists" v-for="(song, index) in songLists.tracks" :key="song.id" @click="playThisSong(index)">
+        <div class="songList-content" v-if="songListInfo.tracks" v-for="(song, index) in songListInfo.tracks" :key="song.id" @click="playThisSong(index)">
             <div class="songIndex">
                 <p>{{index + 1}}</p>
             </div>
@@ -68,7 +68,7 @@ export default {
     },
     methods: {
         playThisSong(index) {
-            let _song = this.songLists.tracks[index]
+            let _song = this.songListInfo.tracks[index]
             var _singer = ''
             _song.ar.forEach(function(element) {
                 _singer = _singer + element.name + '/'   
@@ -84,14 +84,6 @@ export default {
             this.$store.commit('creatAudio')
             this.$store.commit('addSong', newSong)
             this.$refs.musicTray.playThisSong()
-        }
-    },
-    watch: {
-        songListInfo: function () {
-            console.log(this.songListInfo[1])
-            this.$http.get(api.songList() + this.songListInfo.id).then(response => {
-                this.songLists = response.data.playlist
-            })
         }
     },
     computed: {

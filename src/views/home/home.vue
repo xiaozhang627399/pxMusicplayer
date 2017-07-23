@@ -15,11 +15,11 @@
             <p>推荐歌单</p>
         </div>
         <div class="commend-wrapper">
-            <div class="commend" v-if="commends" v-for="(commend, index) in commends" :index="index" :key="commend.id" @click="getSongListIndex(commend.id, index)">
-                <router-link to='/songList'>
+            <div class="commend" v-if="commends" v-for="(commend, index) in commends" :index="index" :key="commend.id" @click="getSongListIndex(index)">
+                 <router-link to='/songList'> 
                     <img class="commend-img" v-if="commend" :src="commend.coverImgUrl">
                     <p>{{commend.name}}</p>
-                </router-link>
+                 </router-link> 
             </div>
         </div>
         <div class="cate-lable">
@@ -41,26 +41,44 @@ import api from './../../assets/api/index'
 import musicTray from './../../components/musicTray'
 export default {
     created() {
-        if (this.banners.length === 0) {
+        if (this.$store.state.banners.length === 0) {
+            this.$store.commit('isLoading')
             this.$http.get(api.banner()).then(response => {
                 this.banners = response.data.banners
+                this.$store.commit('getBanners', response.data.banners)
+                this.$store.commit('isLoading')
             }, response => {
                 // error callback
             })
         }
-        if (this.commends.length === 0) {
+        else {
+            this.banners = this.$store.state.banners
+        }
+        if (this.$store.state.commends.length === 0) {
+            this.$store.commit('isLoading')
             this.$http.get(api.commend()).then(response => {
                 this.commends = response.data.playlists
+                this.$store.commit('getCommends', response.data.playlists)
+                this.$store.commit('isLoading')
             }, response => {
                 // error callback
             })
         }
-        if (this.newSongs.length === 0) {
+        else {
+            this.commends = this.$store.state.commends
+        }
+        if (this.$store.state.newSongs.length === 0) {
+            this.$store.commit('isLoading')
             this.$http.get(api.newSong()).then(response => {
                 this.newSongs = response.data.result
+                this.$store.commit('getNewSongs', response.data.result)
+                this.$store.commit('isLoading')
             }, response => {
                 // error callback
             })
+        }
+        else {
+            this.newSongs = this.$store.state.newSongs
         }
     },
     data() {
@@ -82,10 +100,9 @@ export default {
         }
     },
     methods: {
-        getSongListIndex(id, index) {
-            console.log(this.commends[index])
+        getSongListIndex(index) {
             let songListInfo = []
-            songListInfo.id = id
+            songListInfo.id = this.commends[index].id
             songListInfo.trackCount = this.commends[index].trackCount
             songListInfo.subscribedCount = this.commends[index].subscribedCount
             songListInfo.commentCount = this.commends[index].commentCount
@@ -93,7 +110,15 @@ export default {
             songListInfo.coverImgUrl = this.commends[index].coverImgUrl
             songListInfo.description = this.commends[index].description
             songListInfo.name = this.commends[index].name
-            this.$store.commit('getSongListInfo', songListInfo)
+            this.$store.commit('isLoading')
+            this.$http.get(api.songList() + this.commends[index].id).then(response => {
+                songListInfo.tracks = response.data.playlist.tracks
+                songListInfo.creator = response.data.playlist.creator
+                this.$store.commit('getSongListInfo', songListInfo)
+                this.$store.commit('isLoading')
+            }, response => {
+                // error callback
+            })
         },
         handleTabChange(val) {
             this.activeTab = val

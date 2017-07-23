@@ -5,6 +5,10 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        isLoading: false,
+        banners: [],
+        commends: [],
+        newSongs: [],
         songListInfo: [],
         isAudio: 0,
         audio: '',
@@ -22,6 +26,18 @@ const store = new Vuex.Store({
         searchName: ''
     },
     mutations: {
+        isLoading (state) {
+            state.isLoading = !state.isLoading
+        },
+        getBanners (state, source) {
+            state.banners = source
+        },
+        getCommends (state, source) {
+            state.commends = source
+        },
+        getNewSongs (state, source) {
+            state.newSongs = source
+        },
         getSongListInfo(state, source) {
             state.songListInfo = source
         },

@@ -6,7 +6,7 @@
             <mu-tab value="search" title="搜索" />
         </mu-tabs>
         <div class="search-input-wrapper">
-            <mu-text-field label="输入歌曲/歌手/专辑" @change="search" labelFloat/>
+            <mu-text-field label="输入歌曲/歌手/专辑" v-model="searchName" @change="search" labelFloat/>
         </div>
     </div>
 </template>
@@ -17,11 +17,18 @@ export default {
     data() {
         return {
             activeTab: 'search',
+            searchName: ''
         }
     },
     methods: {
-        search(e) {
-            console.log('1')
+        search() {
+            if(this.searchName){
+            this.$store.commit('changeSearchName', this.searchName)
+            this.$router.push({ path: 'searchList' })
+            }
+            else {
+                alert('请输入搜索信息')
+            }
         },
         handleTabChange(val) {
             this.activeTab = val
