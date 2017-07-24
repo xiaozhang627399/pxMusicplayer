@@ -10,6 +10,7 @@ const store = new Vuex.Store({
         commends: [],
         newSongs: [],
         songListInfo: [],
+        albumInfo: [],
         isAudio: 0,
         audio: '',
         songList: [
@@ -40,6 +41,10 @@ const store = new Vuex.Store({
         },
         getSongListInfo(state, source) {
             state.songListInfo = source
+        },
+        getAlbumInfo(state, source) {
+            state.albumInfo = source
+            console.log(state.albumInfo)
         },
         creatAudio(state) {
             state.isAudio = 1

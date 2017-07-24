@@ -36,6 +36,19 @@
                 </div>
             </div>
         </div>
+        <div v-if="activeTab === 'albums'">
+            <div class="album-wrapper">
+                <div class="album-content" v-for="(album, index) in albums" :key="index" @click="getAlbumIndex(index)">
+                    <div class="album-img">
+                        <img :src="album.picUrl">
+                    </div>
+                    <div class="album-info-wrapper">
+                        <p class="album-name">{{album.name}}</p>
+                        <p class="album-info" v-if="album.artist">{{album.artist.name}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <musicTray ref="musicTray"></musicTray>
     </div>
 </template>
@@ -59,7 +72,8 @@ export default {
             offset: 0,
             activeTab: 'songs',
             songs: [],
-            songLists: []
+            songLists: [],
+            albums: []
         }
     },
     methods: {
@@ -103,14 +117,33 @@ export default {
                 this.$store.commit('isLoading')
             })
         },
+        getAlbumIndex(index) {
+            this.$store.commit('isLoading')
+            this.$http.get(api.album() + this.albums[index].id).then(response => {
+                this.$store.commit('getAlbumInfo', response.data)
+                this.$store.commit('isLoading')
+                this.$router.push({ path: 'album' })
+            })
+        },
         handleTabChange(val) {
             this.activeTab = val
-            if (this.songLists.length === 0) {
-                this.$store.commit('isLoading')
-                this.$http.get(api.search(this._searchName, val, this.offset)).then(response => {
-                    this.songLists = response.data.result.playlists
+            if (val === 'songLists') {
+                if (this.songLists.length === 0) {
                     this.$store.commit('isLoading')
-                })
+                    this.$http.get(api.search(this._searchName, val, this.offset)).then(response => {
+                        this.songLists = response.data.result.playlists
+                        this.$store.commit('isLoading')
+                    })
+                }
+            }
+            else if (val === 'albums') {
+                if (this.albums.length === 0) {
+                    this.$store.commit('isLoading')
+                    this.$http.get(api.search(this._searchName, val, this.offset)).then(response => {
+                        this.albums = response.data.result.albums
+                        this.$store.commit('isLoading')
+                    })
+                }
             }
         }
     },
@@ -200,6 +233,44 @@ body
                 text-overflow: ellipsis
                 font-size 14px
             .songList-info
+                width 70%
+                margin 10px 0 0 0 
+                padding-left 2%
+                overflow: hidden
+                white-space: nowrap
+                text-overflow: ellipsis
+                font-size 12px
+                color #616161
+.album-wrapper
+    width 100%
+    .album-content
+        width 100%
+        height 60px
+        margin 10px 0 0 5px
+        padding-bottom 10px
+        border-bottom 1px solid #e0e0e0
+        .album-img
+            display flex
+            width 50px
+            height 50px
+            justify-content center
+            align-items center
+            float left
+            img
+                width 50px
+                height 50px
+        .album-info-wrapper
+            width 70%
+            height 50px
+            .album-name
+                width 70%
+                margin 0
+                padding-left 2%
+                overflow: hidden
+                white-space: nowrap
+                text-overflow: ellipsis
+                font-size 14px
+            .album-info
                 width 70%
                 margin 10px 0 0 0 
                 padding-left 2%

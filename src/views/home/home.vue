@@ -16,20 +16,22 @@
         </div>
         <div class="commend-wrapper">
             <div class="commend" v-if="commends" v-for="(commend, index) in commends" :index="index" :key="commend.id" @click="getSongListIndex(index)">
-                 <router-link to='/songList'> 
+                <router-link to='/songList'>
                     <img class="commend-img" v-if="commend" :src="commend.coverImgUrl">
                     <p>{{commend.name}}</p>
-                 </router-link> 
+                </router-link>
             </div>
         </div>
         <div class="cate-lable">
             <p>最新专辑</p>
         </div>
         <div class="newSong-wrapper">
-            <div class="newSong" v-if="newSongs" v-for="(newSong, index) in newSongs" :index="index" :key="newSong.id">
-                <img class="newSong-img" v-if="newSong.song.album" :src="newSong.song.album.picUrl">
-                <p>{{newSong.name}}</p>
-                <p v-if="newSong.song.artists">{{newSong.song.artists[0].name}}</p>
+            <div class="newSong" v-if="newSongs" v-for="(newSong, index) in newSongs" :index="index" :key="newSong.id" @click="getAlbumIndex(index)">
+                <router-link to='/album'>
+                    <img class="newSong-img" v-if="newSong.song.album" :src="newSong.song.album.picUrl">
+                    <p>{{newSong.name}}</p>
+                    <p v-if="newSong.song.artists">{{newSong.song.artists[0].name}}</p>
+                </router-link>
             </div>
         </div>
         <musicTray></musicTray>
@@ -120,6 +122,16 @@ export default {
                 // error callback
             })
         },
+        getAlbumIndex(index) {
+            this.$store.commit('isLoading')
+            this.$http.get(api.album() + this.newSongs[index].song.album.id).then(response => {
+                this.$store.commit('getAlbumInfo', response.data)
+                this.$store.commit('isLoading')
+            }, response => {
+                // error callback
+            })
+            // let _id = 
+        },
         handleTabChange(val) {
             this.activeTab = val
             var _path = val
@@ -172,10 +184,14 @@ body
             width 100%
             padding 10px 10px 0 10px
         p
+            width 100%
             margin 0
             padding-left 10px
             font-size 12px
             color rgba(0, 0, 0, 0.87)
+            overflow: hidden
+            white-space: nowrap
+            text-overflow: ellipsis
 .newSong-wrapper
     display flex
     width 100%
@@ -185,15 +201,19 @@ body
     background #fafafa
     .newSong
         width 50%
-        height 220px
+        height 240px
         overflow hidden
         background #fafafa
         .newSong-img
             width 100%
             padding 10px 10px 0 10px
         p
+            width 100%
             margin 0
             padding-left 10px
             font-size 12px
             color rgba(0, 0, 0, 0.87)
+            overflow: hidden
+            white-space: nowrap
+            text-overflow: ellipsis
 </style>
