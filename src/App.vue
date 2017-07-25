@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <mu-appbar title="PXmusicPlayer">
+    <mu-appbar title="PXmusicPlayer" style="height:50px;background:white;color:#757575">
       <mu-icon-button icon="menu" slot="left" @click="open('left')" />
     </mu-appbar>
     <mu-popup position="left" popupClass="popup-left" :open="leftPopup" @close="close('left')">
@@ -32,10 +32,6 @@ export default {
 </script>
 
 <style lang='stylus' rel='stylesheet/stylus'>
-.mu-appbar
-    height 50px
-    background white
-    color #757575
 .mu-tabs
     background white
 .mu-tab-link

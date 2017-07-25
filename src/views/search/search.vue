@@ -1,9 +1,9 @@
 <template>
     <div class="search-wrapper">
-        <mu-tabs :value="activeTab" @change="handleTabChange">
-            <mu-tab value="home" title="推荐" />
-            <mu-tab value="rank" title="排行榜" />
-            <mu-tab value="search" title="搜索" />
+        <mu-tabs :value="activeTab" @change="handleTabChange" style="background:white;color:#757575">
+            <mu-tab value="home" title="推荐" style="color:rgb(117, 117, 117)" />
+            <mu-tab value="rank" title="排行榜" style="color:rgb(117, 117, 117)" />
+            <mu-tab value="search" title="搜索" style="color:rgb(117, 117, 117)" />
         </mu-tabs>
         <div class="search-input-wrapper">
             <mu-text-field label="输入歌曲/歌手/专辑" v-model="searchName" @change="search" labelFloat/>
@@ -50,4 +50,6 @@ body
         align-items center
         width 100%
         margin-top 10%
+.mu-tab-link-highlight
+    background #757575 !important
 </style>

@@ -1,9 +1,9 @@
 <template>
     <div class="home-wrapper">
-        <mu-tabs :value="activeTab" @change="handleTabChange">
-            <mu-tab value="home" title="推荐" />
-            <mu-tab value="rank" title="排行榜" />
-            <mu-tab value="search" title="搜索" />
+        <mu-tabs :value="activeTab" @change="handleTabChange" style="background:white;color:#757575">
+            <mu-tab value="home" title="推荐" style="color:rgb(117, 117, 117)" />
+            <mu-tab value="rank" title="排行榜" style="color:rgb(117, 117, 117)" />
+            <mu-tab value="search" title="搜索" style="color:rgb(117, 117, 117)" />
         </mu-tabs>
         <swiper :options="swiperOption" class="swiper-box">
             <swiper-slide class="swiper-item" v-if="banners" v-for="(banner, index) in banners" :index="index" :key="banner.targetId">
@@ -216,4 +216,6 @@ body
             overflow: hidden
             white-space: nowrap
             text-overflow: ellipsis
+.mu-tab-link-highlight
+    background #757575 !important
 </style>

@@ -2,7 +2,7 @@
   "name": "pxmusicplayer",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "PX <2549128309@qq.com>",
+  "author": "PX <hrrison_px@foxmail.com>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
